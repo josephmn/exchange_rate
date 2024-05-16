@@ -1,7 +1,7 @@
 package com.exchangerate.domain.repository;
 
 import com.exchangerate.domain.model.Exchange;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface ExchangeRepository extends JpaRepository<Exchange, Long> {
+public interface ExchangeRepository extends CrudRepository<Exchange, Long> {
 }

@@ -2,6 +2,7 @@ package com.exchangerate.application.service;
 
 import com.exchangerate.application.dto.ExchangeRateResponse;
 import com.exchangerate.application.dto.ExchangeResponse;
+import com.exchangerate.application.dto.ExchangeSaveResponse;
 import com.exchangerate.domain.model.Exchange;
 import com.exchangerate.domain.repository.ExchangeRepository;
 import com.exchangerate.infrastructure.persistence.ExchangeRateClient;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExchangeService {
@@ -21,6 +25,22 @@ public class ExchangeService {
     public ExchangeService(ExchangeRateClient exchangeRateClient, ExchangeRepository exchangeRepository) {
         this.exchangeRateClient = exchangeRateClient;
         this.exchangeRepository = exchangeRepository;
+    }
+
+    public List<ExchangeSaveResponse> getExchangeSave() {
+        List<Exchange> exchanges = (List<Exchange>) this.exchangeRepository.findAll();
+
+        return exchanges.stream()
+                .map(exchange-> new ExchangeSaveResponse(
+                        exchange.getId(),
+                        exchange.getAmount(),
+                        exchange.getFromCurrency(),
+                        exchange.getToCurrency(),
+                        exchange.getExchangeRate(),
+                        exchange.getConvertedAmount(),
+                        exchange.getLocalDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                ))
+                .toList();
     }
 
     public ExchangeResponse getExchange(String amount, String fromCurrency, String toCurrency) {
